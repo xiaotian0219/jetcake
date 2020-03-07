@@ -7,6 +7,7 @@ class Question(models.Model):
     title = models.CharField(max_length=256)
     content = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -22,6 +23,7 @@ class Answer(models.Model):
     content = models.TextField()
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answers')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ['question', 'created_by']
@@ -40,6 +42,7 @@ class Bookmark(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookmarks')
     question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE, related_name='bookmarks')
     answer = models.ForeignKey(Answer, null=True, blank=True, on_delete=models.CASCADE, related_name='bookmarks')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = [

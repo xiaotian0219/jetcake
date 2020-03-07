@@ -1,8 +1,11 @@
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from authentication.serializers import UserSerializer
+
+from .constants import *
 
 from .models import Question, Answer, Bookmark
 
@@ -103,18 +106,18 @@ class BookmarkCreateSerializer(
         answer = data.get('answer')
 
         if (question and answer) or (not question and not answer):
-            raise serializers.ValidationError('Either question or answer is required.')
+            raise serializers.ValidationError(QUESTION_OR_ANSWER_REQUIRED)
 
         if question:
             if question.bookmarked(user):
-                raise serializers.ValidationError('This question is already bookmarked.')
+                raise serializers.ValidationError(QUESTION_BOOKMARKED)
             if Bookmark.objects.filter(answer__in=question.answers.all(), created_by=user).exists():
-                raise serializers.ValidationError('This question has a bookmarked answer.')
+                raise serializers.ValidationError(QUESTION_HAS_BOOKMARKED_ANSWER)
 
         if answer:
             if answer.bookmarked(user):
-                raise serializers.ValidationError('This answer is already bookmarked.')
+                raise serializers.ValidationError(ANSWER_BOOKMARKED)
             if answer.question.bookmarked(user):
-                raise serializers.ValidationError('The question of this answer is already bookmarked.')
+                raise serializers.ValidationError(ANSWER_QUESTION_BOOKMARKED)
 
         return super().validate(data)

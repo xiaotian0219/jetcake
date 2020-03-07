@@ -2,6 +2,8 @@ from rest_framework import exceptions, mixins, viewsets, serializers
 
 from authentication.serializers import UserSerializer
 
+from api.constants import NOT_ALLOWED
+
 
 class CustomViewSetMixin():
     def get_permissions(self):
@@ -23,7 +25,7 @@ class CustomViewSetMixin():
     def check_object_permissions(self, request, obj):
         if self.action in ['update', 'partial_update', 'destroy']:
             if request.user != obj.created_by:
-                raise exceptions.NotAcceptable('Not allowed to perform this action')
+                raise exceptions.NotAcceptable(NOT_ALLOWED)
 
         return super().check_object_permissions(request, obj)
 
@@ -41,7 +43,7 @@ class ShowBookmarkSerializerMixin():
 
 class RepresentSerializerMixin():
     def to_representation(self, obj):
-        return self.Meta.representation_serializer(obj).data
+        return self.Meta.representation_serializer(obj, context=self.context).data
 
 
 class SetCreatorSerializerMixin():

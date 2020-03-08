@@ -5,6 +5,10 @@
    - Install virtualenv
      python3 -m venv {env}
      source {env}/bin/activate
+
+     for Windows
+     Script\Activate.ps1
+     deactivate
    - Install packages
      pip install -r requirements.txt
    - Start server
